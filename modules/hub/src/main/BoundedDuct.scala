@@ -58,7 +58,7 @@ final class BoundedDuct(maxSize: Int, name: String, logging: Boolean = true)(pro
   private[this] val postRun = (_: Any) =>
     stateRef.getAndUpdate(postRunUpdate) flatMap (_.headOption) foreach run
 
-  private[this] lazy val fallback = { msg: Any =>
+  private[this] lazy val fallback = { (msg: Any) =>
     lila.log("duct").warn(s"[$name] unhandled msg: $msg")
     funit
   }

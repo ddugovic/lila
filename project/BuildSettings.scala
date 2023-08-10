@@ -7,7 +7,7 @@ object BuildSettings {
   import Dependencies._
 
   val lilaVersion        = "3.2"
-  val globalScalaVersion = "2.13.6"
+  val globalScalaVersion = "2.13.5"
 
   val useEpoll = sys.props.get("epoll").fold(false)(_.toBoolean)
   if (useEpoll) println("--- epoll build ---")
@@ -15,7 +15,7 @@ object BuildSettings {
   def buildSettings =
     Defaults.coreDefaultSettings ++ Seq(
       version := lilaVersion,
-      organization := "org.lichess",
+      organization := "org.playstrategy",
       resolvers ++= Seq(lilaMaven) ++ localMaven,
       scalaVersion := globalScalaVersion,
       scalacOptions ++= compilerOptions,

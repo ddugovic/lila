@@ -52,7 +52,7 @@ object Duct {
       }
   }
 
-  private val fallback = { msg: Any =>
+  private val fallback = { (msg: Any) =>
     lila.log("Duct").warn(s"unhandled msg: $msg")
     funit
   }
