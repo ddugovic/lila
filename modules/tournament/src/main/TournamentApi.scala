@@ -539,15 +539,25 @@ final class TournamentApi(
       ] // if set, update the player performance. Leave to none to just recompute the sheet.
   )(userId: User.ID): Funit =
     tour.mode.rated ?? {
-      userRepo.perfOf(userId, PerfType(variant, tour.speed))
-    } flatMap { perf =>
+      userRepo.byId(userId)
+    } flatMap { _.map(user => {
+      // TODO: there is possibly another race condition here,
+      //       will the user perfs be updated in the database by this point?
+      //       if they aren't and you started the first game of the medly round
+      //       with a provisional 1500, then you might have the same rating for the secon
+      //       game. We need to know if this is actually a round switch or not. In the case
+      //       of a round switch (where the variant changed) we need to use the db rating
+      //       in the case of the subsequent games, we should use the rating we
+      //       already have. We could also do this by storing the previous "variant" on the
+      //       user, but that requires a database change and it's somewhat annoying.
+      val perf = user.perfs(PerfType(variant, tour.speed))
       playerRepo.update(tour.id, userId) { player =>
         cached.sheet.update(tour, userId).map { sheet =>
           player.copy(
             score = sheet.total,
             fire = tour.streakable && sheet.onFire,
-            rating = perf.fold(player.rating)(_.intRating),
-            provisional = perf.fold(player.provisional)(_.provisional),
+            rating = perf.intRating.pp("rating for db"),
+            provisional = perf.provisional.pp("is provisional ?"),
             performance = {
               for {
                 g           <- finishing
@@ -564,6 +574,7 @@ final class TournamentApi(
           playerIndexHistoryApi.inc(player.id, strategygames.Player.fromP1(player is p1UserId))
         }
       }
+      }).fold(funit)(_.void)
     }
 
   private def performanceOf(g: Game, userId: String): Option[Int] =
