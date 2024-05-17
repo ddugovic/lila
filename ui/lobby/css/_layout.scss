@@ -29,7 +29,7 @@ $mq-not-col3: $mq-not-small;
     'tv'
     'puzzle'
     'tours'
-    'leader'
+    // 'leader'
     'winner'
     'simuls'
     'gamelist'
@@ -140,9 +140,9 @@ $mq-not-col3: $mq-not-small;
     grid-area: chat;
   }
 
-  &__leaderboard {
-    grid-area: leader;
-  }
+  // &__leaderboard {
+  //   grid-area: leader;
+  // }
 
   &__winners {
     grid-area: winner;
