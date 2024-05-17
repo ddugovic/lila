@@ -26,6 +26,16 @@ object bits {
       tournamentWinners: List[lila.tournament.Winner]
   )(implicit ctx: Context) =
     frag(
+      div(cls := "lobby__tournaments lobby__box")(
+        a(cls := "lobby__box__top", href := routes.Tournament.home)(
+          h2(cls := "title text", dataIcon := "g")(trans.openTournaments()),
+          span(cls := "more")(trans.more(), " »")
+        ),
+        div(cls := "enterable_list lobby__box__content")(
+          views.html.tournament.bits
+            .enterable(truncateTournamentList(tours, maxUnderboardRows))
+        )
+      ),
       /*div(cls := "lobby__leaderboard lobby__box")(
         div(cls := "lobby__box__top")(
           h2(cls := "title text", dataIcon := "C")(trans.leaderboard()),
@@ -67,16 +77,6 @@ object bits {
               }
             )
           )
-        )
-      ),
-      div(cls := "lobby__tournaments lobby__box")(
-        a(cls := "lobby__box__top", href := routes.Tournament.home)(
-          h2(cls := "title text", dataIcon := "g")(trans.openTournaments()),
-          span(cls := "more")(trans.more(), " »")
-        ),
-        div(cls := "enterable_list lobby__box__content")(
-          views.html.tournament.bits
-            .enterable(truncateTournamentList(tours, maxUnderboardRows))
         )
       ),
       simuls.nonEmpty option div(cls := "lobby__simuls lobby__box")(

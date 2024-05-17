@@ -70,6 +70,11 @@ object home {
           "lobby--no-simuls" -> simuls.isEmpty
         )
       )(
+        currentGame.map(bits.currentGameInfo) orElse
+          playban.map(bits.playbanInfo) getOrElse {
+            if (ctx.blind) blindLobby(blindGames)
+            else bits.lobbyApp
+          },
         div(cls := "lobby__table")(
           div(cls := "bg-switch", title := "Dark mode")(
             div(cls := "bg-switch__track"),
@@ -130,14 +135,6 @@ object home {
             )
           )
         ),
-        div(cls := "lobby__chat")(
-          chatOption.isDefined option frag(views.html.chat.frag)
-        ),
-        currentGame.map(bits.currentGameInfo) orElse
-          playban.map(bits.playbanInfo) getOrElse {
-            if (ctx.blind) blindLobby(blindGames)
-            else bits.lobbyApp
-          },
         div(cls := "lobby__side")(
           ctx.blind option h2("Highlights"),
           ctx.noKid option st.section(cls := "lobby__streams")(
@@ -173,6 +170,10 @@ object home {
               a(href := "/about")(trans.aboutX("PlayStrategy"), "...")
             )
         ),
+        div(cls := "lobby__chat")(
+          chatOption.isDefined option frag(views.html.chat.frag)
+        ),
+        bits.lastPosts(lastPost),
         featured map { g =>
           div(cls := "lobby__tv")(
             views.html.game.mini(Pov naturalOrientation g, tv = (homepage.counters.rounds > 3))
@@ -182,6 +183,7 @@ object home {
           views.html.puzzle.embed.dailyLink(p)(ctx.lang)(cls := "lobby__puzzle")
         },
         ctx.noBot option bits.underboards(tours, simuls, leaderboard, tournamentWinners),
+        bits.gameList,
         ctx.noKid option div(cls := "lobby__forum lobby__box")(
           a(cls := "lobby__box__top", href := routes.ForumCateg.index)(
             h2(cls := "title text", dataIcon := "d")(trans.latestForumPosts()),
@@ -191,9 +193,7 @@ object home {
             views.html.forum.post recent forumRecent
           )
         ),
-        bits.lastPosts(lastPost),
         ctx.noKid option bits.weeklyChallenge(weeklyChallenge),
-        bits.gameList,
         div(cls := "lobby__info")(
           div(cls := "lobby__support")(
             a(href := routes.Plan.index)(
