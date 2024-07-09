@@ -17,6 +17,7 @@ import { Api as CgApi } from 'chessground/api';
 import { setDropMode, cancelDropMode } from 'chessground/drop';
 import { State } from 'chessground/state';
 import { opposite } from 'chessground/util';
+import * as Prefs from 'common/prefs';
 import { ClockController, isByoyomi } from './clock/clockCtrl';
 import { CorresClockController, ctrl as makeCorresClock } from './corresClock/corresClockCtrl';
 import MoveOn from './moveOn';
@@ -97,7 +98,10 @@ export default class RoundController {
   sign: string = Math.random().toString(36);
   private music?: any;
 
-  constructor(readonly opts: RoundOpts, readonly redraw: Redraw) {
+  constructor(
+    readonly opts: RoundOpts,
+    readonly redraw: Redraw,
+  ) {
     round.massage(opts.data);
 
     const d = (this.data = opts.data);
@@ -306,7 +310,7 @@ export default class RoundController {
   private setDropOnlyVariantDropMode = (
     activePlayerIndex: boolean,
     currentPlayerIndex: 'p1' | 'p2',
-    s: State
+    s: State,
   ): void => {
     if (activePlayerIndex) {
       return setDropMode(s, stratUtils.onlyDropsVariantPiece(s.variant as VariantKey, currentPlayerIndex));
@@ -364,7 +368,7 @@ export default class RoundController {
     const dice = stratUtils.readDice(
       s.fen,
       this.data.game.variant.key,
-      this.replaying() ? false : this.data.canEndTurn
+      this.replaying() ? false : this.data.canEndTurn,
     );
     const config: CgConfig = {
       fen: s.fen,
@@ -409,7 +413,7 @@ export default class RoundController {
         this.setDropOnlyVariantDropMode(
           this.data.player.playerIndex === this.data.game.player,
           this.data.player.playerIndex,
-          this.chessground.state
+          this.chessground.state,
         );
       } else {
         cancelDropMode(this.chessground.state);
@@ -621,7 +625,7 @@ export default class RoundController {
             role: o.role,
             playerIndex: playedPlayerIndex,
           },
-          util.uci2move(o.uci)![1] as cg.Key
+          util.uci2move(o.uci)![1] as cg.Key,
         );
       } else if (o.uci.includes('^') && allowChessgroundAction) {
         this.chessground.liftNoAnim(o.uci.slice(1) as cg.Key);
@@ -904,7 +908,7 @@ export default class RoundController {
         o.clock.p1Pending * 0.01,
         o.clock.p2Pending * 0.01,
         o.clock.p1Periods,
-        o.clock.p2Periods
+        o.clock.p2Periods,
       );
     }
     if (this.clock && o.clock)
@@ -945,7 +949,7 @@ export default class RoundController {
       },
       _ => {
         this.challengeRematched = false;
-      }
+      },
     );
   };
 
@@ -1210,7 +1214,7 @@ export default class RoundController {
                 role: 's-piece',
                 playerIndex: d.game.player,
               },
-              dropDests[0] as cg.Key
+              dropDests[0] as cg.Key,
             );
             this.onUserNewPiece('s-piece', dropDests[0], { premove: false });
           }, this.forcedActionDelayMillis);
