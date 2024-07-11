@@ -4,7 +4,7 @@ import { teamName } from './battle';
 import * as status from 'game/status';
 import TournamentController from '../ctrl';
 
-function result(win, stat): string {
+function result(win: any, stat: any): string {
   switch (win) {
     case true:
       return '1';
@@ -15,7 +15,7 @@ function result(win, stat): string {
   }
 }
 
-function playerTitle(player) {
+function playerTitle(player: any) {
   return h('h2.player-title', [
     h('span.rank', player.disqualified ? 'DQ' : player.rank + '. '),
     renderPlayer(player, true, true, true, false),
@@ -39,7 +39,7 @@ export default function (ctrl: TournamentController): VNode {
     pairingsLen = data.pairings.length,
     avgOp = pairingsLen
       ? Math.round(
-          data.pairings.reduce(function (a, b) {
+          data.pairings.reduce(function (a: any, b: any) {
             return a + b.op.rating;
           }, 0) / pairingsLen,
         )
@@ -93,7 +93,7 @@ export default function (ctrl: TournamentController): VNode {
               if (href) window.open(href, '_blank', 'noopener');
             }),
           },
-          data.pairings.map(function (p, i) {
+          data.pairings.map(function (p: any, i: any) {
             const res = result(p.win, p.status);
             return h(
               'tr.glpt.' + (res === '1' ? ' win' : res === '0' ? ' loss' : ''),
