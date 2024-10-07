@@ -10,33 +10,6 @@ object bits:
     div(cls := "lobby__app__content lpools")
   )
 
-  def underboards(
-      tours: List[lila.tournament.Tournament],
-      simuls: List[lila.simul.Simul]
-  )(using ctx: Context) =
-    frag(
-      div(cls := "lobby__tournaments-simuls")(
-        div(cls := "lobby__tournaments lobby__box")(
-          a(cls := "lobby__box__top", href := routes.Tournament.home)(
-            h2(cls := "title text", dataIcon := Icon.Trophy)(trans.site.openTournaments()),
-            span(cls := "more")(trans.site.more(), " »")
-          ),
-          div(cls := "lobby__box__content"):
-            views.tournament.ui.enterable(tours)
-        ),
-        simuls.nonEmpty.option(
-          div(cls := "lobby__simuls lobby__box")(
-            a(cls := "lobby__box__top", href := routes.Simul.home)(
-              h2(cls := "title text", dataIcon := Icon.Group)(trans.site.simultaneousExhibitions()),
-              span(cls := "more")(trans.site.more(), " »")
-            ),
-            div(cls := "lobby__box__content"):
-              views.simul.ui.allCreated(simuls, withName = false)
-          )
-        )
-      )
-    )
-
   def showUnreadLichessMessage(using Context) =
     nopeInfo(
       cls := "unread-lichess-message",
@@ -122,4 +95,34 @@ object bits:
         span(cls := "more"):
           if e.isNow then trans.site.eventInProgress() else momentFromNow(e.startsAt)
       )
+    )
+
+  def recentTopics(forumTopics: List[lila.forum.RecentTopic])(using Context) =
+    div(cls := "topic-list")(
+      frag(
+        forumTopics
+          .flatMap: topic =>
+            topic.posts.lastOption.map: mostRecent =>
+              div(
+                span(
+                  a(
+                    href  := routes.ForumCateg.show(topic.categId),
+                    title := lila.forum.ForumCateg.publicNames.get(topic.categId),
+                    cls   := s"categ-link"
+                  )(
+                    lila.forum.ForumCateg.publicShortNames.get(topic.categId).getOrElse("TEAM")
+                  ),
+                  ": ",
+                  a(
+                    href  := routes.ForumPost.redirect(mostRecent.post.id),
+                    title := topic.name
+                  )(topic.name)
+                ),
+                div(cls := "contributors")(
+                  fragList(topic.contribs.map(userIdLink(_)), " · "),
+                  span(cls := "time", momentFromNow(topic.updatedAt))
+                )
+              )
+      ),
+      a(href := routes.ForumCateg.index, cls := "more")(trans.site.more(), " »")
     )

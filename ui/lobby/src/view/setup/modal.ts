@@ -3,14 +3,14 @@ import { MaybeVNode, MaybeVNodes } from 'common/snabbdom';
 import { userLink } from 'common/userLink';
 import { snabDialog } from 'common/dialog';
 import LobbyController from '../../ctrl';
-import { variantPicker } from './components/variantPicker';
-import { timePickerAndSliders } from './components/timePickerAndSliders';
-import { gameModeButtons } from './components/gameModeButtons';
-import { ratingDifferenceSliders } from './components/ratingDifferenceSliders';
-import { createButtons } from './components/colorButtons';
-import { ratingView } from './components/ratingView';
-import { fenInput } from './components/fenInput';
-import { levelButtons } from './components/levelButtons';
+import { variantPicker } from './variantPicker';
+import { timePickerAndSliders } from './timePickerAndSliders';
+import { gameModeButtons } from './gameModeButtons';
+import { ratingDifferenceSliders } from './ratingDifferenceSliders';
+import { createButtons } from './colorButtons';
+import { ratingView } from './ratingView';
+import { fenInput } from './fenInput';
+import { levelButtons } from './levelButtons';
 
 export default function setupModal(ctrl: LobbyController): MaybeVNode {
   const { setupCtrl } = ctrl;
